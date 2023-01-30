@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "655832580681",
+    "firebase_url": "https://waterlevel-project-3185d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "waterlevel-project-3185d",
+    "storage_bucket": "waterlevel-project-3185d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655832580681:android:407edb6ad32b56a1e63598",
+        "android_client_info": {
+          "package_name": "com.exampe.firebaseSetup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "655832580681-r9o62ts1i31lsaf0vn9ndmaqaidq153c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLVD5AikRk_14ReLUmCVxGLTGDKSPGjLc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "655832580681-r9o62ts1i31lsaf0vn9ndmaqaidq153c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655832580681:android:e77fbab95ae88d4ce63598",
+        "android_client_info": {
+          "package_name": "com.example.waterlevel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "655832580681-r9o62ts1i31lsaf0vn9ndmaqaidq153c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLVD5AikRk_14ReLUmCVxGLTGDKSPGjLc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "655832580681-r9o62ts1i31lsaf0vn9ndmaqaidq153c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
