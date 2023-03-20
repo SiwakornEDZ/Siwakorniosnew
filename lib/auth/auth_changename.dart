@@ -55,7 +55,7 @@ void initState() {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer:  DrawerWidget(),
+      drawer:  const DrawerWidget(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(' Change Displayname',
@@ -65,7 +65,7 @@ void initState() {
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black87,
           onPressed: () {
-            Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => Setting()));
+            Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => const Setting()));
           },
         ),
       ),
@@ -80,7 +80,7 @@ void initState() {
                   "assets/images/idcard.png"),
             ),
           ),
-          SizedBox(height: 80),
+          const SizedBox(height: 80),
           Text(
             "           Display name change",
             style: GoogleFonts.kanit(
@@ -101,7 +101,7 @@ void initState() {
                 margin: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: nameText()),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
               margin: const EdgeInsets.only(left: 100.0, right: 100.0),
               child: buildButton()),
@@ -195,7 +195,7 @@ void initState() {
       print(nameNew);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Setting()),
+        MaterialPageRoute(builder: (context) => const Setting()),
       );
     }
   }

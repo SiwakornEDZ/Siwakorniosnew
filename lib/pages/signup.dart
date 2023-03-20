@@ -36,46 +36,27 @@ class _SignupState extends State<Signup> {
     });
   }
 
-
   @override
   void initState() {
     super.initState();
-    if(FirebaseAuth.instance.currentUser != null){
+    if (FirebaseAuth.instance.currentUser != null) {
       print('Found user');
-     SchedulerBinding.instance.addPostFrameCallback((_) {
-  Navigator.push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => Login()));
-});
-    }
-    else {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Login()));
+      });
+    } else {
       print('ไม่พบการเข้าสู่ระบบ');
     }
   }
-
 
   final auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer:  DrawerWidget(),
-      //   appBar: AppBar(
-      //     backgroundColor: Colors.white,
-      //     title: const Text('Register',
-      //         style: TextStyle(
-      //           color: Colors.black87,
-      //         )),
-      //     leading: IconButton(
-      //       icon: const Icon(Icons.arrow_back_ios_new_outlined,
-      //           color: Colors.black87, size: 20),
-      //       color: Colors.black87,
-      //       onPressed: () {
-      //         Navigator.pop(context);
-      //       },
-      //     ),
-      //   ),
-              appBar: AppBar(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined,
                 color: Colors.black87, size: 20),
@@ -93,7 +74,7 @@ class _SignupState extends State<Signup> {
           key: _formstate,
           child: ListView(
             children: <Widget>[
-                            Padding(
+              Padding(
                 padding: const EdgeInsets.only(top: 30.0),
                 child: SizedBox(
                   height: 100,
@@ -103,21 +84,21 @@ class _SignupState extends State<Signup> {
               ),
               SizedBox(height: 50),
               Container(
-                alignment: Alignment.topLeft,
-                child: Text("    สมัครสมาชิก",
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "    สมัครสมาชิก",
+                    style: GoogleFonts.kanit(
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  )),
+              Text(
+                "              กรอกข้อมูลเพื่อทำการลงทะเบียน",
                 style: GoogleFonts.kanit(
-                        fontSize: 20,
-                        color: Colors.black,
-                      ),  
-              )),
-              Text("              กรอกข้อมูลเพื่อทำการลงทะเบียน",
-           style: GoogleFonts.kanit(
-                        fontSize: 14,
-                        color: Colors.black,
-                      ),
-                      
-                      
-          ),
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
               SizedBox(height: 20),
               Container(
                   margin: const EdgeInsets.only(left: 40.0, right: 40.0),
@@ -136,32 +117,28 @@ class _SignupState extends State<Signup> {
                   child: buildConfirmPasswordField()),
               SizedBox(height: 30),
               Container(
-                height: 50,
+                  height: 50,
                   margin: const EdgeInsets.only(left: 100.0, right: 100.0),
                   child: buildRegisterButton()),
-            
             ],
           ),
         ));
   }
 
-
-
   ElevatedButton buildRegisterButton() {
     return ElevatedButton(
-      
       style: ElevatedButton.styleFrom(
-        
         primary: Colors.red[400],
         onPrimary: Colors.white,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       ),
-      child: Text('สมัครสมาชิก',
-      style: GoogleFonts.kanit(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
+      child: Text(
+        'สมัครสมาชิก',
+        style: GoogleFonts.kanit(
+          fontSize: 18,
+          color: Colors.white,
+        ),
       ),
       onPressed: () async {
         print('Register');
@@ -170,56 +147,38 @@ class _SignupState extends State<Signup> {
     );
   }
 
- Future<void> registerWithEmailPassword() async {
-  if(FirebaseAuth.instance.currentUser == null) {
-    try {
-      final _user = await auth.createUserWithEmailAndPassword(
-          email: email.text.trim(), 
+  Future<void> registerWithEmailPassword() async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      try {
+        final _user = await auth.createUserWithEmailAndPassword(
+          email: email.text.trim(),
           password: password.text.trim(),
-          );
-           print(_user.user!.uid);
-           FirebaseAuth.instance.currentUser!.updateDisplayName(name.text.trim());
-           countDocuments();
-          _user.user!.sendEmailVerification();
-        //  _signOut();
-              //               ScaffoldMessenger.of(context)
-              //     .showMaterialBanner(MaterialBanner(
-              //       content: Text("ลงทะเบียนสำเร็จ โปรดยืนยันอีเมลล์"),
-              //       leading: Icon(Icons.info),
-              //       actions: [
-              //         TextButton(
-              //           child: Text("ปิด"),
-              //           onPressed: () {
-              //             ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-              //           },
-              //         ),
-              //       ],
-              //     ));
-              // Future.delayed(Duration(milliseconds: 3000), () {
-              //   ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-              // });
-         // Navigator.pushNamed(context, '/');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if ( e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-         ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("อีเมลล์ถูกใช้งานแล้ว")));
-      } else if (e.code == 'operation-not-allowed') {
-        print('There is a problem with auth service config :/');
-      } else if (e.code == 'weak-password') {
-        print('Please type stronger password');
-      } else {
-        print('auth error ' + e.toString());
-        print(e);
+        );
+        print(_user.user!.uid);
+        FirebaseAuth.instance.currentUser!.updateDisplayName(name.text.trim());
+        countDocuments();
+        _user.user!.sendEmailVerification();
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          print('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          print('The account already exists for that email.');
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("อีเมลล์ถูกใช้งานแล้ว")));
+        } else if (e.code == 'operation-not-allowed') {
+          print('There is a problem with auth service config :/');
+        } else if (e.code == 'weak-password') {
+          print('Please type stronger password');
+        } else {
+          print('auth error ' + e.toString());
+          print(e);
+        }
       }
-    }}
-    else {
-      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => Login()));
+    } else {
+      Navigator.pushReplacement(
+          context, CupertinoPageRoute(builder: (_) => Login()));
     }
   }
-
 
   TextFormField buildPasswordField() {
     return TextFormField(
@@ -241,9 +200,7 @@ class _SignupState extends State<Signup> {
         suffixIcon: IconButton(
           onPressed: togglePasswordView,
           icon: Icon(
-            hidePassword 
-            ? Icons.visibility_off 
-            : Icons.visibility,
+            hidePassword ? Icons.visibility_off : Icons.visibility,
           ),
         ),
       ),
@@ -254,11 +211,9 @@ class _SignupState extends State<Signup> {
     return TextFormField(
       controller: confirmPassword,
       validator: (value) {
-        if(value!.isEmpty)
-           return 'กรุณากรอกรหัสผ่านอีกครั้ง';
-         if(value != password.text)
-           return 'รหัสผ่านไม่ตรงกัน';
-         return null;
+        if (value!.isEmpty) return 'กรุณากรอกรหัสผ่านอีกครั้ง';
+        if (value != password.text) return 'รหัสผ่านไม่ตรงกัน';
+        return null;
       },
       obscureText: hideConfirmPassword,
       keyboardType: TextInputType.text,
@@ -271,15 +226,12 @@ class _SignupState extends State<Signup> {
         suffixIcon: IconButton(
           onPressed: toggleConfirmPasswordView,
           icon: Icon(
-            hideConfirmPassword 
-            ? Icons.visibility_off 
-            : Icons.visibility,
+            hideConfirmPassword ? Icons.visibility_off : Icons.visibility,
           ),
         ),
       ),
     );
   }
-
 
   TextFormField buildNameField() {
     return TextFormField(
@@ -302,7 +254,6 @@ class _SignupState extends State<Signup> {
       ),
     );
   }
-
 
   TextFormField buildEmailField() {
     return TextFormField(
@@ -333,7 +284,6 @@ class _SignupState extends State<Signup> {
     } else {
       return false;
     }
-
   }
 
   void countDocuments() async {
@@ -344,7 +294,6 @@ class _SignupState extends State<Signup> {
     print('จำนวนข้อมูลก่อนเพิ่ม $countUser');
     updateDocuments();
   }
-  
 
   void updateDocuments() async {
     QuerySnapshot query = await FirebaseFirestore.instance
@@ -367,9 +316,6 @@ class _SignupState extends State<Signup> {
     }
   }
 
-
-
-
   void createID() async {
     QuerySnapshot createcountid = await FirebaseFirestore.instance
         .collection('users_count')
@@ -386,43 +332,35 @@ class _SignupState extends State<Signup> {
   }
 
   void uploadUser(String countID) async {
-          await FirebaseFirestore.instance.
-          collection("users")
-          .doc(email.text)
-          .set(
-        {
-          "id": countID,
-          "uid": auth.currentUser!.uid,
-          "email": email.text,
-          "name": name.text,
-          "admin": false.toString(),
-          "created_at": DateTime.now().toString(),
-          "loginwith": 'Firebase',
-          "avatar": 'https://firebasestorage.googleapis.com/v0/b/mainproject-25523.appspot.com/o/avatarnull%2Favatar.png?alt=media&token=14755271-9e58-4710-909c-b10f9c1917e9'
-          }     
-    );
-     await FirebaseFirestore.instance
+    await FirebaseFirestore.instance.collection("users").doc(email.text).set({
+      "id": countID,
+      "uid": auth.currentUser!.uid,
+      "email": email.text,
+      "name": name.text,
+      "admin": false.toString(),
+      "created_at": DateTime.now().toString(),
+      "loginwith": 'Firebase',
+      "avatar":
+          'https://firebasestorage.googleapis.com/v0/b/mainproject-25523.appspot.com/o/avatarnull%2Favatar.png?alt=media&token=14755271-9e58-4710-909c-b10f9c1917e9'
+    });
+    await FirebaseFirestore.instance
         .collection('users_option')
-          .doc(email.text)
-          .set(
-        {
-          "email": email.text,
-          "notification": false.toString(),
-          "fullscreen": true.toString(),
-          }    
-    );
+        .doc(email.text)
+        .set({
+      "email": email.text,
+      "notification": false.toString(),
+      "fullscreen": true.toString(),
+    });
     FirebaseAuth.instance.signOut();
     _signOut();
     goLoginPage();
   }
 
-     Future _signOut() async {
-      
+  Future _signOut() async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
-
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => Login()), (route) => false);
   }
-
 
   void goLoginPage() {
     FirebaseAuth.instance.signOut();

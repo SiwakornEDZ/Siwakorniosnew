@@ -1,5 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -9,9 +8,22 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:waterlevel/auth/auth_changeavatar.dart';
+import 'package:waterlevel/auth/auth_changename.dart';
+import 'package:waterlevel/auth/auth_changepassword.dart';
+import 'package:waterlevel/auth/auth_forgotpassword.dart';
+import 'package:waterlevel/auth/auth_graphlog.dart';
+import 'package:waterlevel/auth/auth_report.dart';
+import 'package:waterlevel/auth/auth_setting.dart';
+import 'package:waterlevel/node/node_config.dart';
+import 'package:waterlevel/node/node_config_message.dart';
+import 'package:waterlevel/node/node_status.dart';
 import 'package:waterlevel/pages/home.dart';
+import 'package:waterlevel/pages/login.dart';
 import 'package:waterlevel/pages/nav.dart';
-import 'package:waterlevel/firebase_options.dart';
+import 'package:waterlevel/auth/auth_function.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:waterlevel/pages/signup.dart';
 
 // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 //     FlutterLocalNotificationsPlugin();
@@ -21,9 +33,9 @@ import 'package:waterlevel/firebase_options.dart';
 //   ?.createNotificationChannel(channel);
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
-  'High Importance Notifications', // title
+  'การแจ้งเตือนทั่วไป', // title
   description:
-      'This channel is used for important notifications.', // description
+      'แสดงข้อมูลการแจ้งเตือนระดับน้ำ', // description
   importance: Importance.max,
 );
 
@@ -44,9 +56,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
@@ -65,7 +76,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'josefinSans',
         scaffoldBackgroundColor: Color.fromARGB(255, 240, 249, 255),
         textTheme: GoogleFonts.kanitTextTheme(),
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           color: Color.fromARGB(255, 240, 249, 255),
           elevation: 0,
         ),
@@ -73,6 +84,21 @@ class MyApp extends StatelessWidget {
       ),
       
       home: const MyHomePage(),
+      routes: {
+        '/home': (context) => const MyHomePage(),
+        '/login': (context) => const Login(),
+        '/register': (context) => const Signup(),
+        '/setting': (context) => const Setting(),
+        '/graph': (context) => const GraphLog(),
+        '/report': (context) => const Report(),
+        '/forgotpassword': (context) => const ForgotPassword(),
+        '/changepassword': (context) => const ChangePassword(),
+        '/changename': (context) => const ChangeName(),
+        '/changeavatar': (context) => const AvatarUpload(),
+        '/node_status': (context) => const NodeStatus(),
+        '/node_config': (context) => const NodeConfig(),
+        'node_config_message': (context) => const NodeConfigMessage(),
+      },
       builder: EasyLoading.init(),
     );
   }
@@ -91,20 +117,19 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   String? message;
   String channelId = "1000";
-  String channelName = "FLUTTER_NOTIFICATION_CHANNEL";
-  String channelDescription = "FLUTTER_NOTIFICATION_CHANNEL_DETAIL";
+  String channelName = "แจ้งเตือนการอัปเดตแอปพลิเคชั่น";
+  String channelDescription = "";
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   initState() {
-        SystemChrome.setEnabledSystemUIMode (SystemUiMode.manual, overlays: []);
-
+    SystemChrome.setEnabledSystemUIMode (SystemUiMode.manual, overlays: []);
+ 
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('notiicon');
+        const AndroidInitializationSettings('notiicon');
 
     var initializationSettingsIOS = DarwinInitializationSettings(
         onDidReceiveLocalNotification: (id, title, body, payload) async {
-      print("onDidReceiveLocalNotification called.");
     });
 
     var initializationSettings = InitializationSettings(
@@ -112,8 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse: (payload) async {
-      // when user tap on notification.
-      print("onSelectNotification called.");
       setState(() {
         message = payload.payload;
       });
@@ -151,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     firebaseMessaging.getToken().then((String? token) {
       assert(token != null);
-      print("Token : $token");
+
     });
   }
 
@@ -197,59 +220,59 @@ class _MyHomePageState extends State<MyHomePage> {
       } catch (e) {
         print(e);
       }
-      print("Token : $_token");
+ 
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
-      final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
-    return Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          margin: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Color.fromARGB(255, 220, 238, 255),
-          ),
-          child: IconButton(
-              icon: Icon(
-                Icons.menu,
-                color: Color.fromARGB(255, 46, 66, 110),
-              ),
-                        onPressed: () {
-            _drawerKey.currentState!.openDrawer();
-          },
-        ),
-        ),
-        title: Text('แอพพลิเคชั่นตรวจสอบระดับน้ำ',
-            style: TextStyle(
-                color: Color.fromARGB(255, 46, 66, 110),
-                fontSize: 20,
-                fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.notifications,
-                color: Color.fromARGB(255, 46, 66, 110),
-              ),
-              onPressed: () {})
-        ],
-      ),
-      body: Home(),
-            key: _drawerKey,
+      final GlobalKey<ScaffoldState> drawerKey = GlobalKey<ScaffoldState>();
+    return Home(
+           key: drawerKey,
                  drawer: Container(
               width: MediaQuery.of(context).size.width / 1.3,
               child: DrawerWidget()
-              ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          sendPushMessage();
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.notifications_active),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    ));
+ 
+
+    // Scaffold(
+    //   appBar: AppBar(
+        // leading: Container(
+        //   margin: const EdgeInsets.all(5),
+        //   child: IconButton(
+        //       icon: const Icon(
+        //         Icons.menu,
+        //         color: Color.fromARGB(255, 46, 66, 110),
+        //       ),
+        //                 onPressed: () {
+        //     drawerKey.currentState!.openDrawer();
+        //   },
+        // ),
+        // ),
+        // title: const Text('',
+        //     style: TextStyle(
+        //         color: Color.fromARGB(255, 46, 66, 110),
+        //         fontSize: 20,
+        //         fontWeight: FontWeight.bold)),
+       // actions: [
+          // IconButton(
+          //     icon: const Icon(
+          //       Icons.gps_fixed,
+          //       color: Color.fromARGB(255, 46, 66, 110),
+          //     ),
+          //     onPressed: () {
+          //         print('test');
+          //     }),
+        //],
+    //  ),
+   //   body: 
+    //   const Home(),
+    //         key: drawerKey,
+    //              drawer: Container(
+    //           width: MediaQuery.of(context).size.width / 1.3,
+    //           child: DrawerWidget()
+    //           ),
+    // );
   }
 }
 

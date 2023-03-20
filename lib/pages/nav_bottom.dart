@@ -53,7 +53,7 @@ class _DrawerBottomState extends State<DrawerBottom> {
                             color: Color.fromARGB(255, 240, 249, 255),
                   
                             child: const Center(
-                              child: Text('โซเชียล'),
+                              child: Text(''),
                             ),
                           ),
                         ),

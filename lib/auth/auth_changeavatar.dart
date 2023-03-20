@@ -64,7 +64,7 @@ void initState() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer:  DrawerWidget(),
+      drawer:  const DrawerWidget(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Upload Image',
@@ -99,7 +99,7 @@ void initState() {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 showImage(),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 submitButton(),
@@ -118,7 +118,7 @@ void initState() {
           _showImage();
         },
         child: Container(
-          margin: EdgeInsets.only(top: 10),
+          margin: const EdgeInsets.only(top: 10),
           padding: const EdgeInsets.all(9), // Border width
           decoration: BoxDecoration(
               color: Colors.grey[350], borderRadius: BorderRadius.circular(20)),
@@ -159,16 +159,15 @@ void initState() {
   ElevatedButton submitButton() {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: Colors.blue,
-          onPrimary: Colors.white,
+          foregroundColor: Colors.white, backgroundColor: Colors.blue,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
         onPressed: () async {
           if (FirebaseAuth.instance.currentUser == null) {
             ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-              content: Text(" กรุณาเข้าสู่ระบบ "),
-              leading: Icon(Icons.info),
+              content: const Text(" กรุณาเข้าสู่ระบบ "),
+              leading: const Icon(Icons.info),
               actions: <Widget>[
                 Builder(
                   builder: (context) => TextButton(
@@ -187,8 +186,8 @@ void initState() {
           if (FirebaseAuth.instance.currentUser != null) {
             if (imageUpload == false) {
               ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-                content: Text(" กรุณาอัพโหลดรูปภาพ "),
-                leading: Icon(Icons.info),
+                content: const Text(" กรุณาอัพโหลดรูปภาพ "),
+                leading: const Icon(Icons.info),
                 actions: <Widget>[
                   Builder(
                     builder: (context) => TextButton(
@@ -210,8 +209,8 @@ void initState() {
                   EasyLoading.show(status: 'Uploading...');
                   ScaffoldMessenger.of(context)
                       .showMaterialBanner(MaterialBanner(
-                    content: Text("กำลังอัพโหลดข้อมูล..."),
-                    leading: Icon(Icons.info),
+                    content: const Text("กำลังอัพโหลดข้อมูล..."),
+                    leading: const Icon(Icons.info),
                     actions: <Widget>[
                       Builder(
                         builder: (context) => TextButton(
@@ -325,8 +324,8 @@ void initState() {
         _pictureCrop(pickedFile.path);
       } else {
         ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-          content: Text("ไม่ได้เลือกรูปภาพ กรุณาเลือกรูปภาพอีกครั้ง"),
-          leading: Icon(Icons.info),
+          content: const Text("ไม่ได้เลือกรูปภาพ กรุณาเลือกรูปภาพอีกครั้ง"),
+          leading: const Icon(Icons.info),
           actions: <Widget>[
             Builder(
               builder: (context) => TextButton(
@@ -352,11 +351,11 @@ void initState() {
         _pictureCrop(pickedFile.path);
       } else {
         ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-          content: Text("ไม่ได้เลือกรูปภาพ โปรดเลือกรูปภาพใหม่อีกครั้ง"),
-          leading: Icon(Icons.info),
+          content: const Text("ไม่ได้เลือกรูปภาพ โปรดเลือกรูปภาพใหม่อีกครั้ง"),
+          leading: const Icon(Icons.info),
           actions: [
             TextButton(
-              child: Text("ปิด"),
+              child: const Text("ปิด"),
               onPressed: () {
                 ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
               },
@@ -402,7 +401,7 @@ void initState() {
       print(url);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Setting()),
+        MaterialPageRoute(builder: (context) => const Setting()),
       );
   }
  

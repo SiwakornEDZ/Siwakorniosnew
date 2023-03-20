@@ -28,18 +28,15 @@ class _LoginState extends State<Login> {
   bool hideCurrentPassword = true;
   @override
   void initState() {
-    super.initState();  
-    FirebaseAuth.instance.signOut();  
-    if(FirebaseAuth.instance.currentUser != null){
+    super.initState();
+    FirebaseAuth.instance.signOut();
+    if (FirebaseAuth.instance.currentUser != null) {
       print('Found user');
-     SchedulerBinding.instance.addPostFrameCallback((_) {
-      Navigator.push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => MyHomePage()));
-});
-    }
-    else {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => MyHomePage()));
+      });
+    } else {
       print('ไม่พบการเข้าสู่ระบบ');
     }
   }
@@ -49,11 +46,13 @@ class _LoginState extends State<Login> {
       hideCurrentPassword = !hideCurrentPassword;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.white,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined,
                 color: Colors.black87, size: 20),
@@ -64,9 +63,7 @@ class _LoginState extends State<Login> {
               Navigator.pushNamed(context, '/');
             },
           ),
-          actions: <Widget>[
-            //  status == 1 ? logoutButton(context) : Container(),
-          ],
+          actions: <Widget>[],
         ),
         body: Form(
           autovalidateMode: AutovalidateMode.always,
@@ -161,8 +158,8 @@ class _LoginState extends State<Login> {
       ),
       onTap: () {
         print('Goto  Regis pagge');
-            Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Signup()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Signup()));
       },
     );
   }
@@ -181,8 +178,8 @@ class _LoginState extends State<Login> {
       ),
       onTap: () {
         print('Goto  Regis pagge');
-           Navigator.pushReplacement(context,
-           CupertinoPageRoute(builder: (_) => forgotPassword()));
+        Navigator.pushReplacement(
+            context, CupertinoPageRoute(builder: (_) => ForgotPassword()));
       },
     );
   }
@@ -202,9 +199,7 @@ class _LoginState extends State<Login> {
       icon: const Icon(Icons.facebook),
       iconSize: 50.0,
       color: Colors.blue,
-      onPressed: () {
-         
-      },
+      onPressed: () {},
     );
   }
 
@@ -212,27 +207,71 @@ class _LoginState extends State<Login> {
     return ElevatedButton(
         child: const Text('Login'),
         style: ElevatedButton.styleFrom(
-          primary: Colors.red[400],
-          onPrimary: Colors.white,
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.red[400],
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
         onPressed: () async {
-        if(FirebaseAuth.instance.currentUser == null){
-          if (_formstate.currentState!.validate()) {
-            print('Valid Form');
-            _formstate.currentState!.save();
-            try {
-              EasyLoading.show(status: 'กำลังโหลด...');
-              await auth
-                  .signInWithEmailAndPassword(
-                      email: email!, password: password!)
-                  .then((value) {
-                if (value.user!.emailVerified) {
-                  userEmail = value.user!.email!;
+          if (FirebaseAuth.instance.currentUser == null) {
+            if (_formstate.currentState!.validate()) {
+              print('Valid Form');
+              _formstate.currentState!.save();
+              try {
+                EasyLoading.show(status: 'กำลังโหลด...');
+                await auth
+                    .signInWithEmailAndPassword(
+                        email: email!, password: password!)
+                    .then((value) {
+                  if (value.user!.emailVerified) {
+                    userEmail = value.user!.email!;
+                    ScaffoldMessenger.of(context)
+                        .showMaterialBanner(MaterialBanner(
+                      content: Text("เข้าสู่ระบบสำเร็จ"),
+                      leading: Icon(Icons.info),
+                      actions: [
+                        TextButton(
+                          child: Text("ปิด"),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context)
+                                .hideCurrentMaterialBanner();
+                          },
+                        ),
+                      ],
+                    ));
+                    EasyLoading.showSuccess('เข้าสู่ระบบสำเร็จ!');
+                    Future.delayed(const Duration(milliseconds: 1500), () {
+                      ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                      EasyLoading.dismiss();
+                    });
+                    //   _getDataFromDatabase();
+                    Navigator.pushNamed(context, '/');
+                  } else {
+                    FirebaseAuth.instance.currentUser!.sendEmailVerification();
+                    FirebaseAuth.instance.signOut();
+                    EasyLoading.showError('ตรวจสอบอีเมลของคุณ');
+                    ScaffoldMessenger.of(context)
+                        .showMaterialBanner(MaterialBanner(
+                      content: Text("ยังไม่ยืนยันอีเมลล์"),
+                      leading: Icon(Icons.info),
+                      actions: [
+                        TextButton(
+                          child: Text("ปิด"),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context)
+                                .hideCurrentMaterialBanner();
+                          },
+                        ),
+                      ],
+                    ));
+                    Future.delayed(const Duration(milliseconds: 2500), () {
+                      EasyLoading.dismiss();
+                    });
+                  }
+                }).catchError((reason) {
                   ScaffoldMessenger.of(context)
                       .showMaterialBanner(MaterialBanner(
-                    content: Text("เข้าสู่ระบบสำเร็จ"),
+                    content: Text("อีเมลล์หรือรหัสผ่านไม่ถูกต้อง"),
                     leading: Icon(Icons.info),
                     actions: [
                       TextButton(
@@ -244,74 +283,27 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ));
-                  EasyLoading.showSuccess('เข้าสู่ระบบสำเร็จ!');
-                 Future.delayed(const Duration(milliseconds: 1500), () {
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  EasyLoading.dismiss();
-                 });
-                  //   _getDataFromDatabase();
-                  Navigator.pushNamed(context, '/');
-                } else {
-                  FirebaseAuth.instance.currentUser!.sendEmailVerification();
-                  FirebaseAuth.instance.signOut();
-                  EasyLoading.showError('ตรวจสอบอีเมลของคุณ');
-                  ScaffoldMessenger.of(context)
-                      .showMaterialBanner(MaterialBanner(
-                    content: Text("ยังไม่ยืนยันอีเมลล์"),
-                    leading: Icon(Icons.info),
-                    actions: [
-                      TextButton(
-                        child: Text("ปิด"),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context)
-                              .hideCurrentMaterialBanner();
-                        },
-                      ),
-                    ],
-                  ));
+                  EasyLoading.showError('อีเมลล์หรือรหัสผ่านไม่ถูกต้อง');
                   Future.delayed(const Duration(milliseconds: 2500), () {
-                 EasyLoading.dismiss();
+                    ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                    EasyLoading.dismiss();
                   });
-                }
-              }).catchError((reason) {
-                ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-                  content: Text("อีเมลล์หรือรหัสผ่านไม่ถูกต้อง"),
-                  leading: Icon(Icons.info),
-                  actions: [
-                    TextButton(
-                      child: Text("ปิด"),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context)
-                            .hideCurrentMaterialBanner();
-                      },
-                    ),
-                  ],
-                ));
-                EasyLoading.showError('อีเมลล์หรือรหัสผ่านไม่ถูกต้อง');
-                Future.delayed(const Duration(milliseconds: 2500), () {
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  EasyLoading.dismiss();
                 });
-                
-              });
-            } on FirebaseAuthException catch (e) {
-              if (e.code == 'user-not-found') {
-                print('No user found for that email.');
-              } else if (e.code == 'wrong-password') {
-                print('Wrong password provided for that user.');
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'user-not-found') {
+                  print('No user found for that email.');
+                } else if (e.code == 'wrong-password') {
+                  print('Wrong password provided for that user.');
+                }
               }
+            } else {
+              print('Invalid Form');
+              _showMyDialog();
             }
           } else {
-            print('Invalid Form');
-            _showMyDialog();
+            //    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => Homepage()));
           }
-        } else {
-      //    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => Homepage()));
-        }
-        
-        }
-
-        );
+        });
   }
 
   TextFormField passwordTextFormField() {
@@ -337,9 +329,7 @@ class _LoginState extends State<Login> {
         suffixIcon: IconButton(
           onPressed: toggleCurrentPasswordView,
           icon: Icon(
-            hideCurrentPassword 
-            ? Icons.visibility_off 
-            : Icons.visibility,
+            hideCurrentPassword ? Icons.visibility_off : Icons.visibility,
           ),
         ),
       ),
@@ -412,7 +402,6 @@ class _LoginState extends State<Login> {
       },
     );
   }
-
 
   Future _signOut() async {
     await FirebaseAuth.instance.signOut();

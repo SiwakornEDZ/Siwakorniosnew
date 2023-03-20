@@ -4,9 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:waterlevel/admin/admin_gps_distance.dart';
+import 'package:waterlevel/admin/admin_problem.dart';
+import 'package:waterlevel/admin/admin_user_management.dart';
+import 'package:waterlevel/auth/auth_graphlog.dart';
+import 'package:waterlevel/auth/auth_report.dart';
 import 'package:waterlevel/auth/auth_setting.dart';
 import 'package:waterlevel/main.dart';
-import 'package:waterlevel/pages/home.dart';
+import 'package:waterlevel/node/node_config.dart';
+import 'package:waterlevel/node/node_status.dart';
+import 'package:waterlevel/node/node_management.dart';
 import 'package:waterlevel/pages/login.dart';
 import 'package:waterlevel/pages/signup.dart';
 
@@ -18,11 +25,10 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  String? name;
+  String? name = '#Name';
   String? avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-  @override
-  final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
   String? userEmail = 'กรุณาเข้าสู่ระบบ';
+
   @override
   void initState() {
     checkNameWhoCreated();
@@ -40,34 +46,27 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           .where('avatar')
           .get();
       if (users.docs.isNotEmpty) {
-        print('พบข้อมูลชื่อผู้โพส');
-        print(users.docs[0].data()['email']);
         if (mounted) {
           setState(() {
             name = users.docs[0].data()['name'];
             avatar = users.docs[0].data()['avatar'];
           });
         }
-        // print(avatar);
         if (avatar == null) {
           setState(() {
-            print('ไม่พบรูปภาพ');
             avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
           });
-          print(avatar);
         } else {
-          print('พบภาพโปรไฟล์');
+
         }
       } else if (users.docs.isEmpty) {
-        print('ไม่พบข้อมูลชื่อผู้โพส');
         setState(() {
-          name = 'ไม่พบชื่อผู้ใช้';
+          name = '#Name';
         });
       }
     } else {
-      print('ไม่พบข้อมูล');
       setState(() {
-        name = 'ไม่พบชื่อผู้ใช้';
+        name = '#Name';
       });
     }
   }
@@ -76,9 +75,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          bottomRight: Radius.circular(30),
+        borderRadius: const BorderRadius.only(
+ 
+          bottomRight: Radius.circular(70),
         ),
         color: Colors.white,
         boxShadow: [
@@ -86,7 +85,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 5,
             blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
+            offset: const Offset(0, 3), // changes position of shadow
           ),
         ],
       ),
@@ -95,77 +94,67 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       child: ListView(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(top: 0),
+            margin: const EdgeInsets.only(top: 0),
             decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 69, 179, 244),
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
+              bottomLeft: Radius.circular(20),
               ),
+              color: Color.fromARGB(255, 38, 46, 91),
+ 
               boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.black54,
-                    blurRadius: 5.0,
-                    offset: Offset(0.0, 0.75))
+                
               ],
             ),
             child: Column(
               children: <Widget>[
                 Container(
+                  
                   child: Row(
                     children: <Widget>[
                       Container(
                         width: 50,
                         height: 100,
-                        margin: EdgeInsets.only(left: 10,right: 10),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: CircleAvatar(
-                              backgroundImage: Image.network(avatar!).image,
-                              ),
-                        ),
+                        margin: const EdgeInsets.only(left: 10,right: 10),
                       ),
                       FirebaseAuth.instance.currentUser != null
-                          ? Container(
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    child: Center(
-                                      child: Text(
-                                        name.toString(),
-                                        style: GoogleFonts.kanit(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                          ? Column(
+                            children: <Widget>[
+                              Container(
+                                child: Center(
+                                  child: Text(
+                                    name.toString(),
+                                    style: GoogleFonts.kanit(
+                                      fontSize: 14,
+                                      color: Color.fromARGB(221, 255, 255, 255),
                                     ),
                                   ),
-                                  Container(
-                                    child: Center(
-                                      child: Text(
-                                        userEmail.toString().length > 28
-                                            ? userEmail
-                                                    .toString()
-                                                    .substring(0, 20) +
-                                                '...'
-                                            : userEmail.toString(),
-                                        overflow: TextOverflow.fade,
-                                        //  userEmail.toString().substring(0, userEmail.toString().indexOf('@')),
-                                        style: GoogleFonts.kanit(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            )
+                              Container(
+                                child: Center(
+                                  child: Text(
+                                    userEmail.toString().length > 28
+                                        ? userEmail
+                                                .toString()
+                                                .substring(0, 20) +
+                                            '...'
+                                        : userEmail.toString(),
+                                    overflow: TextOverflow.fade,
+                                    //  userEmail.toString().substring(0, userEmail.toString().indexOf('@')),
+                                    style: GoogleFonts.kanit(
+                                      fontSize: 14,
+                                      color: Color.fromARGB(221, 255, 255, 255),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
                           : Container(
                               child: Column(
                                 children: <Widget>[
                                   Container(
-                                    margin: EdgeInsets.only(left: 10),
+                                    margin: const EdgeInsets.only(left: 10),
                                     child: Text(
                                       'กรุณาเข้าสู่ระบบ',
                                       style: GoogleFonts.kanit(
@@ -196,9 +185,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                         height: 25,
                       ),
                       onTap: () {
-                        print("Clicked");
                         Navigator.pushReplacement(context,
-                            CupertinoPageRoute(builder: (_) => MyHomePage()));
+                            CupertinoPageRoute(builder: (_) => const MyApp()));
                       },
                     ),
                     ListTile(
@@ -211,9 +199,120 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                         height: 25,
                       ),
                       onTap: () {
-                        print("Clicked");
                         Navigator.push(context,
-                            CupertinoPageRoute(builder: (_) => Setting()));
+                            CupertinoPageRoute(builder: (_) => const Setting()));
+                      },
+                    ),
+                     ListTile(
+                      title: Text('ตั้งค่า Node',
+                          style: GoogleFonts.kanit(
+                              fontSize: 14, color: Colors.black)),
+                      leading: Image.asset(
+                        'assets/setting.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (_) => const NodeConfig()));
+                      },
+                    ),
+                     ListTile(
+                      title: Text('แจ้งปัญหา',
+                          style: GoogleFonts.kanit(
+                              fontSize: 14, color: Colors.black)),
+                      leading: Image.asset(
+                        'assets/register.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (_) => const Report()));
+                      },
+                    ),
+                     ListTile(
+                      title: Text('รายงานปัญหา',
+                          style: GoogleFonts.kanit(
+                              fontSize: 14, color: Colors.black)),
+                      leading: Image.asset(
+                        'assets/register.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (_) => const Problem()));
+                      },
+                    ),
+                     ListTile(
+                      title: Text('สเตตัสของโหนด',
+                          style: GoogleFonts.kanit(
+                              fontSize: 14, color: Colors.black)),
+                      leading: Image.asset(
+                        'assets/images/signal.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (_) => const NodeStatus()));
+                      },
+                    ),
+                     ListTile(
+                      title: Text('กราฟระดับน้ำ',
+                          style: GoogleFonts.kanit(
+                              fontSize: 14, color: Colors.black)),
+                      leading: Image.asset(
+                        'assets/images/signal.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (_) => const GraphLog()));
+                      },
+                    ),
+                    //  ListTile(
+                    //   title: Text('GPS',
+                    //       style: GoogleFonts.kanit(
+                    //           fontSize: 14, color: Colors.black)),
+                    //   leading: Image.asset(
+                    //     'assets/images/signal.png',
+                    //     width: 25,
+                    //     height: 25,
+                    //   ),
+                    //   onTap: () {
+                    //     Navigator.push(context,
+                    //         CupertinoPageRoute(builder: (_) => GPSDistance(isShowingMainData: true,)));
+                    //   },
+                    // ),
+                     ListTile(
+                      title: Text('จัดการผู้ใช้งาน',
+                          style: GoogleFonts.kanit(
+                              fontSize: 14, color: Colors.black)),
+                      leading: Image.asset(
+                        'assets/images/signal.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (_) => const UserManagement()));
+                      },
+                    ),
+                     ListTile(
+                      title: Text('จัดการโหนด',
+                          style: GoogleFonts.kanit(
+                              fontSize: 14, color: Colors.black)),
+                      leading: Image.asset(
+                        'assets/images/signal.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (_) => const NodeManagement()));
                       },
                     ),
                     ListTile(
@@ -250,9 +349,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           height: 25,
                         ),
                         onTap: () {
-                          print("Clicked");
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Login()));
+                              MaterialPageRoute(builder: (context) => const Login()));
                         },
                       ),
                     ),
@@ -271,9 +369,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                         height: 25,
                       ),
                       onTap: () {
-                        print("Clicked");
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Signup()));
+                              MaterialPageRoute(builder: (context) => const Signup()));
                       },
                     ),
                   ],
@@ -284,15 +381,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   }
 
   Future _signOut() async {
-    EasyLoading.showInfo('ออกจากระบบสำเร็จ');
+    EasyLoading.showInfo('ออกจากระบบ...');
     await FirebaseAuth.instance.signOut();
-    //  Navigator.pop(context);
+    Navigator.pop(context);
     _doOpenPage();
   }
 
   void _doOpenPage() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Login()));
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => const Login()), (route) => false);
     Future.delayed(const Duration(milliseconds: 2000), () {
       EasyLoading.dismiss();
     });

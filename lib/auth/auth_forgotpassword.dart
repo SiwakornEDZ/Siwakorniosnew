@@ -4,19 +4,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waterlevel/auth/auth_setting.dart';
 import 'package:waterlevel/pages/nav.dart';
-class forgotPassword extends StatefulWidget {
-  const forgotPassword({super.key});
+class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({super.key});
   @override
-  State<forgotPassword> createState() => _forgotPasswordState();
+  State<ForgotPassword> createState() => _ForgotPasswordState();
 }
-class _forgotPasswordState extends State<forgotPassword> {
+class _ForgotPasswordState extends State<ForgotPassword> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer:  DrawerWidget(),
+      drawer:  const DrawerWidget(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('Forgot Password',
@@ -28,7 +28,7 @@ class _forgotPasswordState extends State<forgotPassword> {
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black87,
           onPressed: () {
-            Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => Setting()));
+            Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => const Setting()));
           },
         ),
       ),
@@ -43,7 +43,7 @@ class _forgotPasswordState extends State<forgotPassword> {
                   "https://cdn-icons-png.flaticon.com/512/6195/6195696.png"),
             ),
           ),
-          SizedBox(height: 80),
+          const SizedBox(height: 80),
           Text("       Password Reset",
            style: GoogleFonts.kanit(
                         fontSize: 20,
@@ -64,7 +64,7 @@ class _forgotPasswordState extends State<forgotPassword> {
                 margin: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: forgorText()),
           ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
           Container(
               margin: const EdgeInsets.only(left: 100.0, right: 100.0),
               child: buildButton()),
@@ -86,7 +86,7 @@ class _forgotPasswordState extends State<forgotPassword> {
       
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.email),
+        prefixIcon: const Icon(Icons.email),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),

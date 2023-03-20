@@ -48,7 +48,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer:  DrawerWidget(),
+      drawer:  const DrawerWidget(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(' Change Password',
@@ -58,7 +58,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black87,
           onPressed: () {
-            Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => Setting()));
+            Navigator.pushReplacement(context, CupertinoPageRoute(builder: (_) => const Setting()));
           },
         ),
       ),
@@ -73,7 +73,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   "assets/images/passwordchange.png"),
             ),
           ),
-          SizedBox(height: 80),
+          const SizedBox(height: 80),
           Text(
             "           Password change",
             style: GoogleFonts.kanit(
@@ -106,7 +106,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 margin: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: confirmNewPasswordText()),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
               margin: const EdgeInsets.only(left: 100.0, right: 100.0),
               child: buildButton()),
@@ -133,11 +133,11 @@ class _ChangePasswordState extends State<ChangePassword> {
       keyboardType: TextInputType.visiblePassword,
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(22.0)),
         ),
         labelText: 'รหัสผ่านเก่า',
-        prefixIcon: Icon(Icons.password_outlined),
+        prefixIcon: const Icon(Icons.password_outlined),
         suffixIcon: IconButton(
           onPressed: toggleCurrentPasswordView,
           icon: Icon(
@@ -175,11 +175,11 @@ class _ChangePasswordState extends State<ChangePassword> {
       textInputAction: TextInputAction.next,
       obscureText: hideNewPassword,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(22.0)),
         ),
         labelText: 'รหัสผ่านใหม่',
-        prefixIcon: Icon(Icons.password_outlined),
+        prefixIcon: const Icon(Icons.password_outlined),
         suffixIcon: IconButton(
           onPressed: toggleNewPasswordView,
           icon: Icon(
@@ -214,11 +214,11 @@ class _ChangePasswordState extends State<ChangePassword> {
       textInputAction: TextInputAction.next,
       obscureText: hideNewConfirmPassword,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(22.0)),
         ),
         labelText: 'ยืนยันรหัสผ่านใหม่',
-        prefixIcon: Icon(Icons.password_outlined),
+        prefixIcon: const Icon(Icons.password_outlined),
         suffixIcon: IconButton(
           onPressed: toggleNewConfirmPasswordView,
           icon: Icon(
@@ -269,7 +269,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         EasyLoading.showSuccess('เปลี่ยนรหัสผ่านสำเร็จแล้ว');
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Setting()),
+          MaterialPageRoute(builder: (context) => const Setting()),
         );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -291,7 +291,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     EasyLoading.showError('กรุณาเข้าสู่ระบบ');
           Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Login()),
+          MaterialPageRoute(builder: (context) => const Login()),
         );
  }
   
